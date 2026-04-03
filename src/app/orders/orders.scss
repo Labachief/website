@@ -1,0 +1,359 @@
+﻿:host {
+  --bg: #edf2fb;
+  --surface: #f7f9ff;
+  --ink: #0f1f3d;
+  --muted: #62708a;
+  --line: #d8e0f0;
+  --blue-500: #4d71b8;
+  --blue-600: #365ea6;
+  --blue-700: #274e90;
+  --row-a: #f5f8ff;
+  --row-b: #edf2fc;
+
+  display: block;
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 8% 0%, #dce6ff 0%, transparent 28%),
+    radial-gradient(circle at 95% 20%, #d4def7 0%, transparent 24%),
+    var(--bg);
+  color: var(--ink);
+  font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+}
+
+.orders-page {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.action-btn {
+  min-width: 140px;
+  height: 58px;
+  border: 1px solid #2e5498;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #5d80c7, #4a6fb7);
+  color: #f8fbff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 18px rgba(44, 84, 153, 0.22);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #4f73bb, #3f63aa);
+  box-shadow: 0 10px 20px rgba(44, 84, 153, 0.28);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.search-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--surface) 82%, #d5ddf0);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--muted);
+  font-size: 22px;
+  box-shadow: 0 6px 16px rgba(20, 43, 87, 0.08);
+}
+
+.search-panel select,
+.search-panel input,
+.search-btn,
+.clear-btn {
+  font: inherit;
+}
+
+.search-panel select {
+  width: 88px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 10px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.divider {
+  width: 1px;
+  height: 34px;
+  background: var(--line);
+  margin-inline: 2px;
+}
+
+.search-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+}
+
+.search-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: #78859e;
+}
+
+.search-panel input {
+  width: 230px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 16px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.search-panel input::placeholder {
+  color: #9aa5bb;
+}
+
+.search-btn,
+.clear-btn {
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 16px;
+  color: #eff5ff;
+  background: var(--blue-500);
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.search-btn:hover,
+.clear-btn:hover {
+  background: var(--blue-600);
+}
+
+.clear-btn {
+  background: #7c879b;
+}
+
+.clear-btn:hover {
+  background: #687284;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: color-mix(in srgb, #fff 84%, #dce6fa);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(19, 39, 79, 0.08);
+}
+
+.debug-line {
+  margin: 0 0 10px;
+  color: #4d5f82;
+  font-size: 14px;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.orders-table th,
+.orders-table td {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.orders-table th:last-child,
+.orders-table td:last-child {
+  border-right: 0;
+}
+
+.orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.orders-table th {
+  height: 64px;
+  background: linear-gradient(180deg, #5b7fc2, #4a71b8);
+  color: #f1f6ff;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: none;
+  padding: 0 14px;
+}
+
+.orders-table td {
+  height: 64px;
+  font-size: 17px;
+  padding: 0 14px;
+}
+
+.orders-table td.status-row {
+  height: 66px;
+  text-align: center;
+  color: #4d5f82;
+  font-weight: 600;
+  background: #f5f8ff;
+}
+
+.orders-table td.status-row.error {
+  color: #b42318;
+  background: #fff2f0;
+}
+
+.retry-btn {
+  margin-left: 12px;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #365ea6;
+  color: #fff;
+  cursor: pointer;
+}
+
+.orders-table tbody tr:nth-child(odd) td {
+  background: var(--row-a);
+}
+
+.orders-table tbody tr:nth-child(even) td {
+  background: var(--row-b);
+}
+
+.orders-table tbody tr:hover td {
+  background: #e4edff;
+}
+
+.col-select {
+  width: 82px;
+  text-align: center;
+}
+
+.check-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #2c5294;
+  border-radius: 8px;
+  background: #4f74bb;
+  color: #e9f0ff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.check-btn:hover {
+  background: var(--blue-700);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1080px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-panel {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 760px) {
+  :host {
+    padding: 16px;
+  }
+
+  .action-buttons {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .action-btn {
+    min-width: 0;
+    flex: 1;
+    height: 46px;
+    font-size: 20px;
+    border-radius: 10px;
+  }
+
+  .search-panel {
+    font-size: 16px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .search-panel select,
+  .search-panel input,
+  .search-btn,
+  .clear-btn {
+    height: 40px;
+    font-size: 15px;
+  }
+
+  .search-panel select {
+    width: 72px;
+  }
+
+  .search-panel input {
+    min-width: 160px;
+    width: auto;
+    flex: 1;
+  }
+
+  .search-btn,
+  .clear-btn {
+    padding: 0 12px;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .orders-table th {
+    height: 48px;
+    font-size: 13px;
+    padding: 0 8px;
+  }
+
+  .orders-table td {
+    height: 50px;
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  .col-select {
+    width: 52px;
+  }
+
+  .check-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+}

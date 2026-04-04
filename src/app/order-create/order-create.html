@@ -1,0 +1,165 @@
+﻿<section class="create-page">
+  <header class="page-header">
+    <h1>Create Order</h1>
+    <a routerLink="/" class="back-link">Back to List</a>
+  </header>
+
+  <form class="form-shell" (ngSubmit)="submit()">
+    <section class="card">
+      <h2>Order</h2>
+      <div class="grid">
+        <label>
+          <span>number</span>
+          <input name="orderNumber" [(ngModel)]="form.order.number" required />
+        </label>
+
+        <label>
+          <span>type of business</span>
+          <select
+            name="typeOfBusiness"
+            [(ngModel)]="form.order.typeOfBusiness"
+            (ngModelChange)="onBusinessTypeChange($event)"
+            required
+          >
+            <option value="B2B">B2B</option>
+            <option value="B2C">B2C</option>
+          </select>
+        </label>
+
+        <label>
+          <span>type of order</span>
+          <input name="typeOfOrder" [(ngModel)]="form.order.typeOfOrder" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Order Detail</h2>
+      <div class="grid">
+        <label>
+          <span>item</span>
+          <input name="item" [(ngModel)]="form.detail.item" />
+        </label>
+        <label>
+          <span>description of goods</span>
+          <input
+            name="descriptionOfGoods"
+            [(ngModel)]="form.detail.descriptionOfGoods"
+          />
+        </label>
+        <label>
+          <span>shipper</span>
+          <input name="shipper" [(ngModel)]="form.detail.shipper" />
+        </label>
+        <label>
+          <span>por</span>
+          <input name="por" [(ngModel)]="form.detail.por" />
+        </label>
+        <label>
+          <span>shipper phone</span>
+          <input name="shipperPhone" [(ngModel)]="form.detail.shipperPhone" />
+        </label>
+        <label>
+          <span>shipper email</span>
+          <input
+            type="email"
+            name="shipperEmail"
+            [(ngModel)]="form.detail.shipperEmail"
+          />
+        </label>
+        <label>
+          <span>consignee</span>
+          <input name="consignee" [(ngModel)]="form.detail.consignee" />
+        </label>
+        <label>
+          <span>pod</span>
+          <input name="pod" [(ngModel)]="form.detail.pod" />
+        </label>
+        <label>
+          <span>consignee phone</span>
+          <input
+            name="consigneePhone"
+            [(ngModel)]="form.detail.consigneePhone"
+          />
+        </label>
+        <label>
+          <span>consignee email</span>
+          <input
+            type="email"
+            name="consigneeEmail"
+            [(ngModel)]="form.detail.consigneeEmail"
+          />
+        </label>
+        <label>
+          <span>tracking number</span>
+          <input
+            name="trackingNumber"
+            [(ngModel)]="form.detail.trackingNumber"
+          />
+        </label>
+        <label>
+          <span>shipping method</span>
+          <input
+            name="shippingMethod"
+            [(ngModel)]="form.detail.shippingMethod"
+          />
+        </label>
+        <label>
+          <span>eta</span>
+          <input type="date" name="eta" [(ngModel)]="form.detail.eta" />
+        </label>
+
+        @if (form.order.typeOfBusiness === 'B2B') {
+          <label>
+            <span>container</span>
+            <select name="container" [(ngModel)]="form.detail.container">
+              <option [ngValue]="true">是</option>
+              <option [ngValue]="false">否</option>
+            </select>
+          </label>
+        }
+
+        @if (form.order.typeOfBusiness === 'B2C') {
+          <label>
+            <span>category</span>
+            <input name="category" [(ngModel)]="form.detail.category" />
+          </label>
+          <label>
+            <span>two way</span>
+            <select name="twoWay" [(ngModel)]="form.detail.twoWay">
+              <option [ngValue]="true">是</option>
+              <option [ngValue]="false">否</option>
+            </select>
+          </label>
+        }
+
+        <label class="full">
+          <span>note</span>
+          <textarea name="note" rows="3" [(ngModel)]="form.detail.note"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="submit" class="primary" [disabled]="creating">
+        {{ creating ? '建立中...' : '建立' }}
+      </button>
+      <button type="button" class="secondary" (click)="reset()">重設</button>
+      <button type="button" class="ghost" (click)="finish()">結束</button>
+    </div>
+
+    @if (submitError) {
+      <p class="status error">{{ submitError }}</p>
+    }
+    @if (submitSuccess) {
+      <p class="status success">{{ submitSuccess }}</p>
+    }
+  </form>
+
+  @if (submitted) {
+    <section class="preview">
+      <h3>Payload Preview</h3>
+      <pre>{{ payloadPreview }}</pre>
+    </section>
+  }
+</section>

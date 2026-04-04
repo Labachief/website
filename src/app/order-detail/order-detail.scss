@@ -1,0 +1,149 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f3f6fc;
+  color: #102445;
+  font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+}
+
+.detail-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+.back-link {
+  color: #355ea6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.status {
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 600;
+}
+
+.status.loading {
+  background: #eef4ff;
+  color: #355ea6;
+}
+
+.status.error {
+  background: #fff1f0;
+  color: #b42318;
+}
+
+.card {
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid #dbe4f3;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(17, 39, 77, 0.05);
+}
+
+.card h2 {
+  margin-bottom: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+}
+
+label span {
+  font-size: 13px;
+  color: #4f6283;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #c9d5eb;
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+  box-sizing: border-box;
+  background: #f8faff;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #365ea6;
+}
+
+.secondary {
+  background: #6f7f98;
+}
+
+.ghost {
+  background: #49566d;
+}
+
+.status.success {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .detail-page {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

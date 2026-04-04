@@ -1,0 +1,163 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f3f6fc;
+  color: #102445;
+  font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+}
+
+.create-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.back-link {
+  color: #355ea6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #dbe4f3;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(17, 39, 77, 0.05);
+}
+
+.card h2 {
+  margin-bottom: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+}
+
+label span {
+  font-size: 13px;
+  color: #4f6283;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #c9d5eb;
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #365ea6;
+}
+
+.secondary {
+  background: #6f7f98;
+}
+
+.ghost {
+  background: #49566d;
+}
+
+.preview {
+  margin-top: 16px;
+  background: #0e1f3f;
+  color: #dbe6ff;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.status {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status.error {
+  color: #b42318;
+}
+
+.status.success {
+  color: #027a48;
+}
+
+pre {
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .create-page {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,7 @@
 ﻿import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 type OrderRecord = {
   id: number;
@@ -35,11 +36,13 @@ type OrdersApiItem = Partial<{
 })
 export class Orders {
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
   protected readonly pageSizeOptions = [10, 20, 50];
 
   protected pageSize = 10;
   protected isLoading = false;
   protected isDeleting = false;
+  protected showDeleteDialog = false;
   protected loadError = '';
   protected searchKeyword = '';
   protected appliedKeyword = '';
@@ -60,40 +63,51 @@ export class Orders {
   }
 
   protected createOrder(): void {
-    const nextId = (this.orders.at(-1)?.id ?? 0) + 1;
-    const today = this.today();
-    const newOrder: OrderRecord = {
-      id: nextId,
-      number: `Number${nextId}`,
-      businessType: '',
-      orderType: '',
-      createdDate: today,
-      updatedDate: today,
-    };
+    if (this.selectedOrderId !== null) {
+      this.loadError = 'Please clear selected order before creating a new one.';
+      return;
+    }
 
-    this.orders = [newOrder, ...this.orders];
-    this.selectedOrderId = newOrder.id;
+    void this.router.navigate(['/orders/create']);
   }
 
   protected updateOrder(): void {
     if (this.selectedOrderId === null) {
+      this.loadError = 'Please select one order before update.';
       return;
     }
 
-    const today = this.today();
-    this.orders = this.orders.map((order) =>
-      order.id === this.selectedOrderId
-        ? {
-            ...order,
-            updatedDate: today,
-          }
-        : order,
+    const selectedOrder = this.orders.find(
+      (order) => order.id === this.selectedOrderId,
     );
+
+    if (!selectedOrder?.number) {
+      this.loadError = 'Selected order number was not found.';
+      return;
+    }
+
+    void this.router.navigate([
+      '/orders',
+      encodeURIComponent(selectedOrder.number),
+      'detail',
+    ]);
   }
 
-  protected async deleteOrder(): Promise<void> {
+  protected deleteOrder(): void {
     if (this.selectedOrderId === null) {
       this.loadError = 'Please select one order before delete.';
+      return;
+    }
+    this.showDeleteDialog = true;
+  }
+
+  protected cancelDelete(): void {
+    this.showDeleteDialog = false;
+  }
+
+  protected async confirmDelete(): Promise<void> {
+    if (this.selectedOrderId === null) {
+      this.showDeleteDialog = false;
       return;
     }
 
@@ -102,16 +116,21 @@ export class Orders {
     );
     if (!selectedOrder) {
       this.loadError = 'Selected order was not found.';
+      this.showDeleteDialog = false;
       return;
     }
 
     this.isDeleting = true;
+    this.showDeleteDialog = false;
     this.loadError = '';
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 8000);
 
     try {
       const encodedNumber = encodeURIComponent(selectedOrder.number);
       const response = await fetch(`/api/orders/delete/${encodedNumber}`, {
         method: 'POST',
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -124,8 +143,14 @@ export class Orders {
       this.selectedOrderId = null;
     } catch (error) {
       console.error('Delete order failed:', error);
-      this.loadError = 'Delete failed. Please check API and selected number.';
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        this.loadError =
+          'Delete request timeout. Data may already be deleted, please refresh list.';
+      } else {
+        this.loadError = 'Delete failed. Please check API and selected number.';
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       this.isDeleting = false;
       this.cdr.detectChanges();
     }
@@ -200,7 +225,7 @@ export class Orders {
       const payload = (await response.json()) as unknown;
       const items = this.extractOrders(payload);
       this.orders = items.map((item, index) => this.normalizeOrder(item, index));
-      this.selectedOrderId = this.orders[0]?.id ?? null;
+      this.selectedOrderId = null;
       settled = true;
       this.cdr.detectChanges();
     } catch (error) {

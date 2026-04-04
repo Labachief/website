@@ -1,8 +1,22 @@
 ﻿<section class="orders-page">
   <div class="toolbar">
     <div class="action-buttons">
-      <button type="button" class="action-btn" (click)="createOrder()">建立</button>
-      <button type="button" class="action-btn" (click)="updateOrder()">更新</button>
+      <button
+        type="button"
+        class="action-btn"
+        [disabled]="selectedOrderId !== null"
+        (click)="createOrder()"
+      >
+        建立
+      </button>
+      <button
+        type="button"
+        class="action-btn"
+        [disabled]="selectedOrderId === null"
+        (click)="updateOrder()"
+      >
+        更新
+      </button>
       <button
         type="button"
         class="action-btn"
@@ -102,4 +116,20 @@
       </tbody>
     </table>
   </div>
+
+  @if (showDeleteDialog) {
+    <div class="dialog-backdrop" (click)="cancelDelete()">
+      <div class="dialog-card" (click)="$event.stopPropagation()">
+        <p class="dialog-title">要不要刪除？</p>
+        <div class="dialog-actions">
+          <button type="button" class="dialog-yes" (click)="confirmDelete()">
+            是
+          </button>
+          <button type="button" class="dialog-no" (click)="cancelDelete()">
+            否
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </section>

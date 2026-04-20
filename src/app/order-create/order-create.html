@@ -30,6 +30,16 @@
           <span>type of order</span>
           <input name="typeOfOrder" [(ngModel)]="form.order.typeOfOrder" />
         </label>
+
+        <label>
+          <span>status</span>
+          <input
+            [value]="form.order.status"
+            name="status"
+            class="readonly-field"
+            readonly
+          />
+        </label>
       </div>
     </section>
 
@@ -91,17 +101,20 @@
           />
         </label>
         <label>
+          <span>shipping method</span>
+          <select name="shippingMethod" [(ngModel)]="form.detail.shippingMethod">
+            <option value="">請選擇</option>
+            <option value="直送">直送</option>
+            <option value="轉運">轉運</option>
+          </select>
+        </label>
+        <label>
           <span>tracking number</span>
           <input
             name="trackingNumber"
             [(ngModel)]="form.detail.trackingNumber"
-          />
-        </label>
-        <label>
-          <span>shipping method</span>
-          <input
-            name="shippingMethod"
-            [(ngModel)]="form.detail.shippingMethod"
+            class="readonly-field"
+            readonly
           />
         </label>
         <label>

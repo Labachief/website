@@ -8,6 +8,7 @@ type CreateOrderModel = {
     number: string;
     typeOfBusiness: 'B2B' | 'B2C';
     typeOfOrder: string;
+    status: string;
   };
   detail: {
     item: string;
@@ -58,6 +59,7 @@ type CreateOrderRequest = {
   number: number;
   typeOfBusiness: 'B2B' | 'B2C';
   typeOfOrder: string | null;
+  status: string | null;
   updatedDate: null;
 };
 
@@ -112,6 +114,8 @@ export class OrderCreate {
       this.submitted = true;
       this.submitSuccess = '建立成功。';
       this.cdr.detectChanges();
+      await this.router.navigate(['/orders', orderNumber, 'detail']);
+      return;
     } catch (error) {
       console.error('Create order failed:', error);
       this.submitError = '建立失敗，請確認 API 與欄位內容。';
@@ -186,6 +190,7 @@ export class OrderCreate {
       number: orderNumber,
       typeOfBusiness: this.form.order.typeOfBusiness,
       typeOfOrder: this.nullIfEmpty(this.form.order.typeOfOrder),
+      status: this.nullIfEmpty(this.form.order.status),
       updatedDate: null,
     };
   }
@@ -201,6 +206,7 @@ export class OrderCreate {
         number: '',
         typeOfBusiness: 'B2B',
         typeOfOrder: '',
+        status: 'Pending', // Default status
       },
       detail: {
         item: '',

@@ -8,6 +8,7 @@ type OrderRecord = {
   number: string;
   businessType: string;
   orderType: string;
+  status: string;
   createdDate: string;
   updatedDate: string;
 };
@@ -20,6 +21,7 @@ type OrdersApiItem = Partial<{
   businessType: string;
   typeOfOrder: string;
   orderType: string;
+  status: string;
   createdDate: string | null;
   createDate: string | null;
   created_at: string | null;
@@ -184,6 +186,7 @@ export class Orders {
       order.number.toLowerCase().includes(keyword) ||
       order.businessType.toLowerCase().includes(keyword) ||
       order.orderType.toLowerCase().includes(keyword) ||
+      order.status.toLowerCase().includes(keyword) ||
       order.createdDate.toLowerCase().includes(keyword) ||
       order.updatedDate.toLowerCase().includes(keyword)
     );
@@ -256,6 +259,7 @@ export class Orders {
       number: this.toText(item.number ?? item.orderNumber ?? `Number${resolvedId}`),
       businessType: this.toText(item.typeOfBusiness ?? item.businessType ?? ''),
       orderType: this.toText(item.typeOfOrder ?? item.orderType ?? ''),
+      status: this.toText(item.status ?? item.status ?? ''),
       createdDate: this.toText(
         item.createdDate ?? item.createDate ?? item.created_at ?? '',
       ),

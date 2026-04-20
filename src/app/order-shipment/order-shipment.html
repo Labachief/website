@@ -1,0 +1,195 @@
+<section class="shipment-page">
+  <header class="page-header">
+    <h1>貨運單</h1>
+    <div class="header-links">
+      <a routerLink="/" class="back-link">回訂單列表</a>
+      <a [routerLink]="['/orders', orderNumber, 'detail']" class="back-link">
+        回去 Order Detail
+      </a>
+    </div>
+  </header>
+
+  @if (isLoading) {
+    <div class="status loading">讀取中...</div>
+  } @else {
+    @if (errorMessage) {
+      <div class="status error">{{ errorMessage }}</div>
+    } @else {
+      <section class="card summary">
+        <div class="field">
+          <label>Order Number</label>
+          <input [value]="orderNumber" readonly />
+        </div>
+        <div class="field">
+          <label>Tracking Number</label>
+          <input [value]="trackingNumber" readonly />
+        </div>
+        <div class="field">
+          <label>Shipper Method</label>
+          <input [value]="shippingMethod" readonly />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <input [value]="status" readonly />
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input [(ngModel)]="note" />
+        </div>
+      </section>
+
+      <section class="card route-card">
+        <h2>運送路線</h2>
+        <ul class="track-list">
+          <li class="track-item active">
+            <span class="track-node"></span>
+            <div class="track-content">
+              <h3>POR (Place of Receipt)</h3>
+              <label class="location-label">地址:</label>
+              <input
+                class="route-location-input"
+                [ngModel]="por"
+                (ngModelChange)="onPorChange($event)"
+                placeholder="請輸入 POR 地址"
+              />
+            </div>
+          </li>
+          <li class="track-item no-node">
+            <span class="track-node hidden-node" aria-hidden="true"></span>
+            <div class="track-content">
+              <h3>車次</h3>
+              <div class="cargo-grid cargo-head">
+                <p><strong>Route number</strong></p>
+                <p><strong>item</strong></p>
+                <p><strong>quantity</strong></p>
+                <p><strong>unit</strong></p>
+                <p><strong>logistics</strong></p>
+                <p><strong>carrier</strong></p>
+                <p><strong>status</strong></p>
+                <p><strong>操作</strong></p>
+              </div>
+              @for (line of cargoLinesForFrom(por); track line.routeNumber) {
+                <div class="cargo-grid cargo-row">
+                  <p>{{ line.routeNumber }}</p>
+                  <input [(ngModel)]="line.item" />
+                  <input [(ngModel)]="line.quantity" />
+                  <input [(ngModel)]="line.unit" />
+                  <input [(ngModel)]="line.logistics" />
+                  <input [(ngModel)]="line.carrier" />
+                  <input [(ngModel)]="line.status" />
+                  <button
+                    type="button"
+                    class="remove-cargo"
+                    [disabled]="cargoLines.length <= 1"
+                    (click)="removeCargoLine(line.routeNumber)"
+                  >
+                    刪除
+                  </button>
+                </div>
+              }
+              <button type="button" class="add-cargo" (click)="addCargoLine(por)">
+                + 新增車次
+              </button>
+            </div>
+          </li>
+          @for (stop of relayStops; track $index) {
+            <li class="track-item relay-stop">
+              <span class="track-node"></span>
+              <div class="track-content">
+                <div class="relay-title-row">
+                  <h3>中繼站 {{ $index + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="remove-relay"
+                    (click)="removeRelayStop($index)"
+                  >
+                    刪除中繼站
+                  </button>
+                </div>
+                <label class="location-label">地址:</label>
+                <input
+                  class="route-location-input"
+                  [ngModel]="relayStops[$index]"
+                  (ngModelChange)="onRelayStopChange($index, $event)"
+                  placeholder="請輸入中繼站地址"
+                />
+              </div>
+            </li>
+            <li class="track-item no-node relay-cargo">
+              <span class="track-node hidden-node" aria-hidden="true"></span>
+              <div class="track-content">
+                <h3>車次</h3>
+                <div class="cargo-grid cargo-head">
+                  <p><strong>Route number</strong></p>
+                  <p><strong>item</strong></p>
+                  <p><strong>quantity</strong></p>
+                  <p><strong>unit</strong></p>
+                  <p><strong>logistics</strong></p>
+                  <p><strong>carrier</strong></p>
+                  <p><strong>status</strong></p>
+                  <p><strong>操作</strong></p>
+                </div>
+                @for (line of cargoLinesForFrom(stop); track line.routeNumber) {
+                  <div class="cargo-grid cargo-row">
+                    <p>{{ line.routeNumber }}</p>
+                    <input [(ngModel)]="line.item" />
+                    <input [(ngModel)]="line.quantity" />
+                    <input [(ngModel)]="line.unit" />
+                    <input [(ngModel)]="line.logistics" />
+                    <input [(ngModel)]="line.carrier" />
+                    <input [(ngModel)]="line.status" />
+                    <button
+                      type="button"
+                      class="remove-cargo"
+                      [disabled]="cargoLines.length <= 1"
+                      (click)="removeCargoLine(line.routeNumber)"
+                    >
+                      刪除
+                    </button>
+                  </div>
+                }
+                <button type="button" class="add-cargo" (click)="addCargoLine(stop)">
+                  + 新增車次
+                </button>
+              </div>
+            </li>
+          }
+          @if (!isDirectShipping()) {
+          <li class="track-item no-node relay-action-item">
+            <span class="track-node hidden-node" aria-hidden="true"></span>
+            <div class="track-content">
+              <button type="button" class="add-relay" (click)="addRelayStop()">
+                + 新增中繼站
+              </button>
+            </div>
+          </li>
+          }
+          <li class="track-item">
+            <span class="track-node"></span>
+            <div class="track-content">
+              <h3>POD (Place of Delivery)</h3>
+              <label class="location-label">地址:</label>
+              <input
+                class="route-location-input"
+                [ngModel]="pod"
+                (ngModelChange)="onPodChange($event)"
+                placeholder="請輸入 POD 地址"
+              />
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <div class="actions">
+        <button type="button" class="primary" [disabled]="isSaving" (click)="saveShipment()">
+          {{ isSaving ? '儲存中...' : '儲存' }}
+        </button>
+        <button type="button" class="secondary" (click)="resetShipment()">重置</button>
+        <button type="button" class="ghost" (click)="finish()">結束</button>
+      </div>
+      @if (actionMessage) {
+        <p class="action-message">{{ actionMessage }}</p>
+      }
+    }
+  }
+</section>

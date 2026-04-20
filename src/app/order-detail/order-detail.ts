@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 type DetailResponse = Partial<{
   item: string | null;
+  quantity: string | null;
+  unit: string | null;
   descriptionOfGoods: string | null;
   shipper: string | null;
   por: string | null;
@@ -27,6 +29,7 @@ type OrderDetailResponse = Partial<{
   number: number | string;
   typeOfBusiness: 'B2B' | 'B2C' | string | null;
   typeOfOrder: string | null;
+  status: string | null;
   detail: DetailResponse | null;
 }>;
 
@@ -35,9 +38,12 @@ type DetailViewModel = {
     number: string;
     typeOfBusiness: 'B2B' | 'B2C';
     typeOfOrder: string;
+    status: string;
   };
   detail: {
     item: string;
+    quantity: string;
+    unit: string;
     descriptionOfGoods: string;
     shipper: string;
     por: string;
@@ -74,6 +80,7 @@ export class OrderDetail {
   protected successMessage = '';
   protected orderNumber = '';
   protected form: DetailViewModel = this.createEmptyForm();
+  protected readonly shippingMethodOptions = ['直送', '轉運'];
   private originalForm: DetailViewModel = this.createEmptyForm();
 
   constructor() {
@@ -142,6 +149,18 @@ export class OrderDetail {
     this.successMessage = '';
   }
 
+  protected async dispatch(): Promise<void> {
+    void this.router.navigate(['/orders', this.orderNumber, 'shipment']);
+  }
+
+  protected openShipmentByTracking(): void {
+    const trackingNumber = this.form.detail.trackingNumber.trim();
+    if (!trackingNumber) {
+      return;
+    }
+    void this.router.navigate(['/shipments', encodeURIComponent(trackingNumber)]);
+  }
+
   protected finish(): void {
     void this.router.navigate(['/']);
   }
@@ -186,9 +205,12 @@ export class OrderDetail {
         number: this.toText(response.number, fallbackNumber),
         typeOfBusiness: businessType,
         typeOfOrder: this.toText(response.typeOfOrder),
+        status: this.toText(response.status),
       },
       detail: {
         item: this.toText(detail.item),
+        quantity: this.toText(detail.quantity),
+        unit: this.toText(detail.unit),
         descriptionOfGoods: this.toText(detail.descriptionOfGoods),
         shipper: this.toText(detail.shipper),
         por: this.toText(detail.por),
@@ -221,6 +243,8 @@ export class OrderDetail {
       descriptionOfGoods: this.nullIfEmpty(this.form.detail.descriptionOfGoods),
       eta: this.nullIfEmpty(this.form.detail.eta),
       item: this.nullIfEmpty(this.form.detail.item),
+      quantity: this.nullIfEmpty(this.form.detail.quantity),
+      unit: this.nullIfEmpty(this.form.detail.unit),
       note: this.nullIfEmpty(this.form.detail.note),
       orderNumber,
       pod: this.nullIfEmpty(this.form.detail.pod),
@@ -252,6 +276,7 @@ export class OrderDetail {
       number: orderNumber,
       typeOfBusiness: this.form.order.typeOfBusiness,
       typeOfOrder: this.nullIfEmpty(this.form.order.typeOfOrder),
+      status: this.nullIfEmpty(this.form.order.status),
       updatedDate: null,
     };
   }
@@ -262,9 +287,12 @@ export class OrderDetail {
         number: '',
         typeOfBusiness: 'B2B',
         typeOfOrder: '',
+        status: '',
       },
       detail: {
         item: '',
+        quantity: '',
+        unit: '',
         descriptionOfGoods: '',
         shipper: '',
         por: '',
@@ -302,5 +330,9 @@ export class OrderDetail {
   private nullIfEmpty(value: string): string | null {
     const v = value.trim();
     return v ? v : null;
+  }
+
+  protected isPresetShippingMethod(value: string): boolean {
+    return this.shippingMethodOptions.includes(value);
   }
 }

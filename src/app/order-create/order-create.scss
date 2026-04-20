@@ -75,6 +75,17 @@ textarea {
   box-sizing: border-box;
 }
 
+.readonly-field {
+  background: #edf1f7;
+  color: #102445;
+  cursor: default;
+}
+
+.readonly-field:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 textarea {
   resize: vertical;
 }

@@ -75,6 +75,16 @@ label span {
   color: #4f6283;
 }
 
+.tracking-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tracking-row input {
+  flex: 1 1 auto;
+}
+
 input,
 select,
 textarea {
@@ -84,7 +94,22 @@ textarea {
   padding: 10px;
   font: inherit;
   box-sizing: border-box;
-  background: #f8faff;
+  background: #ffffff;
+}
+
+.readonly-field {
+  background: #edf1f7 !important;
+  color: #102445 !important;
+  border-color: #c9d5eb;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #102445;
+  cursor: default;
+}
+
+.readonly-field:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #c9d5eb;
 }
 
 .full {
@@ -121,6 +146,12 @@ button:disabled {
 
 .ghost {
   background: #49566d;
+}
+
+.dispatch {
+  background: #2e9a5f;
+  padding: 10px 14px;
+  white-space: nowrap;
 }
 
 .status.success {

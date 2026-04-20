@@ -16,15 +16,34 @@
       <div class="grid">
         <label>
           <span>number</span>
-          <input [(ngModel)]="form.order.number" name="orderNumber" readonly />
+          <input
+            [(ngModel)]="form.order.number"
+            name="orderNumber"
+            class="readonly-field"
+            readonly
+          />
         </label>
         <label>
           <span>type of business</span>
-          <input [value]="form.order.typeOfBusiness" name="typeOfBusiness" readonly />
+          <input
+            [value]="form.order.typeOfBusiness"
+            name="typeOfBusiness"
+            class="readonly-field"
+            readonly
+          />
         </label>
         <label>
           <span>type of order</span>
           <input [(ngModel)]="form.order.typeOfOrder" name="typeOfOrder" />
+        </label>
+        <label>
+          <span>status</span>
+          <input
+            [value]="form.order.status"
+            name="status"
+            class="readonly-field"
+            readonly
+          />
         </label>
       </div>
     </section>
@@ -35,6 +54,14 @@
         <label>
           <span>item</span>
           <input [(ngModel)]="form.detail.item" name="item" />
+        </label>
+        <label>
+          <span>quantity</span>
+          <input [(ngModel)]="form.detail.quantity" name="quantity" />
+        </label>
+        <label>
+          <span>unit</span>
+          <input [(ngModel)]="form.detail.unit" name="unit" />
         </label>
         <label>
           <span>description of goods</span>
@@ -73,13 +100,51 @@
           <input [(ngModel)]="form.detail.consigneeEmail" name="consigneeEmail" />
         </label>
         <label>
-          <span>tracking number</span>
-          <input [(ngModel)]="form.detail.trackingNumber" name="trackingNumber" />
+          <span>shipping method</span>
+          <select
+            [(ngModel)]="form.detail.shippingMethod"
+            name="shippingMethod"
+            [disabled]="!!form.detail.trackingNumber.trim()"
+          >
+            <option value="">請選擇</option>
+            @if (form.detail.shippingMethod && !isPresetShippingMethod(form.detail.shippingMethod)) {
+              <option [value]="form.detail.shippingMethod">{{ form.detail.shippingMethod }}</option>
+            }
+            <option value="直送">直送</option>
+            <option value="轉運">轉運</option>
+          </select>
         </label>
         <label>
-          <span>shipping method</span>
-          <input [(ngModel)]="form.detail.shippingMethod" name="shippingMethod" />
+          <span>tracking number</span>
+          <div class="tracking-row">
+            <input
+              [(ngModel)]="form.detail.trackingNumber"
+              name="trackingNumber"
+              class="readonly-field"
+              readonly
+            />
+            @if (form.detail.trackingNumber.trim()) {
+              <button
+                type="button"
+                class="dispatch"
+                (click)="openShipmentByTracking()"
+              >
+                查看貨運單
+              </button>
+            }
+            @if (!form.detail.trackingNumber.trim()) {
+              <button
+                type="button"
+                class="dispatch"
+                [disabled]="isUpdating"
+                (click)="dispatch()"
+              >
+                配送
+              </button>
+            }
+          </div>
         </label>
+
         <label>
           <span>eta</span>
           <input [(ngModel)]="form.detail.eta" name="eta" />

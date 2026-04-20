@@ -77,11 +77,11 @@
       <tbody>
         @if (isLoading) {
           <tr>
-            <td class="status-row" colspan="6">讀取中...</td>
+            <td class="status-row" colspan="7">讀取中...</td>
           </tr>
         } @else if (loadError) {
           <tr>
-            <td class="status-row error" colspan="6">
+            <td class="status-row error" colspan="7">
               {{ loadError }}
               <button type="button" class="retry-btn" (click)="retryLoadOrders()">
                 重試
@@ -112,7 +112,7 @@
 
         @if (!isLoading && !loadError && visibleOrders.length === 0) {
           <tr>
-            <td class="status-row" colspan="6">目前沒有訂單資料</td>
+            <td class="status-row" colspan="7">目前沒有訂單資料</td>
           </tr>
         }
       </tbody>

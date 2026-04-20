@@ -1,4 +1,4 @@
-﻿:host {
+:host {
   --bg: #edf2fb;
   --surface: #f7f9ff;
   --ink: #0f1f3d;
@@ -12,17 +12,17 @@
 
   display: block;
   min-height: 100vh;
-  padding: 28px;
+  padding: clamp(14px, 2vw, 28px);
   background:
     radial-gradient(circle at 8% 0%, #dce6ff 0%, transparent 28%),
     radial-gradient(circle at 95% 20%, #d4def7 0%, transparent 24%),
     var(--bg);
   color: var(--ink);
-  font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+  font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
 }
 
 .orders-page {
-  max-width: 1320px;
+  width: min(96vw, 1720px);
   margin: 0 auto;
 }
 
@@ -40,13 +40,13 @@
 }
 
 .action-btn {
-  min-width: 140px;
-  height: 58px;
+  min-width: clamp(112px, 10vw, 148px);
+  height: clamp(46px, 5vh, 58px);
   border: 1px solid #2e5498;
   border-radius: 12px;
   background: linear-gradient(180deg, #5d80c7, #4a6fb7);
   color: #f8fbff;
-  font-size: 30px;
+  font-size: clamp(20px, 2vw, 30px);
   font-weight: 700;
   letter-spacing: 1px;
   box-shadow: 0 8px 18px rgba(44, 84, 153, 0.22);
@@ -80,7 +80,7 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   color: var(--muted);
-  font-size: 22px;
+  font-size: clamp(16px, 1.2vw, 22px);
   box-shadow: 0 6px 16px rgba(20, 43, 87, 0.08);
 }
 
@@ -92,8 +92,8 @@
 }
 
 .search-panel select {
-  width: 88px;
-  height: 44px;
+  width: clamp(72px, 5vw, 88px);
+  height: clamp(40px, 4vh, 44px);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0 10px;
@@ -122,8 +122,8 @@
 }
 
 .search-panel input {
-  width: 230px;
-  height: 44px;
+  width: clamp(180px, 16vw, 260px);
+  height: clamp(40px, 4vh, 44px);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 0 16px;
@@ -137,7 +137,7 @@
 
 .search-btn,
 .clear-btn {
-  height: 44px;
+  height: clamp(40px, 4vh, 44px);
   border: 0;
   border-radius: 999px;
   padding: 0 16px;
@@ -198,18 +198,18 @@
 }
 
 .orders-table th {
-  height: 64px;
+  height: clamp(50px, 6vh, 64px);
   background: linear-gradient(180deg, #5b7fc2, #4a71b8);
   color: #f1f6ff;
-  font-size: 18px;
+  font-size: clamp(14px, 1vw, 18px);
   font-weight: 700;
   text-transform: none;
   padding: 0 14px;
 }
 
 .orders-table td {
-  height: 64px;
-  font-size: 17px;
+  height: clamp(50px, 6vh, 64px);
+  font-size: clamp(14px, 0.95vw, 17px);
   padding: 0 14px;
 }
 
@@ -334,6 +334,20 @@
   }
 }
 
+@media (max-width: 900px) {
+  .orders-page {
+    width: 100%;
+  }
+
+  .toolbar {
+    margin-bottom: 14px;
+  }
+
+  .table-wrap {
+    border-radius: 12px;
+  }
+}
+
 @media (max-width: 760px) {
   :host {
     padding: 16px;
@@ -406,5 +420,27 @@
     height: 26px;
     border-radius: 6px;
     font-size: 14px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .orders-page {
+    width: min(94vw, 2000px);
+  }
+}
+
+@media (max-height: 700px) {
+  .toolbar {
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  .action-btn {
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .search-panel {
+    padding: 8px 10px;
   }
 }

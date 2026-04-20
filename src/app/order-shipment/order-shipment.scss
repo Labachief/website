@@ -10,15 +10,17 @@
 }
 
 .shipment-page {
-  max-width: 980px;
+  width: min(96vw, 1700px);
   margin: 0 auto;
-  padding: 24px;
+  padding: clamp(14px, 2vw, 24px);
 }
 
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-bottom: 14px;
 }
 
@@ -158,6 +160,7 @@ h3 {
   border: 1px solid #e1e8f5;
   border-radius: 12px;
   padding: 10px 12px;
+  overflow-x: auto;
 }
 
 .track-content h3 {
@@ -205,6 +208,7 @@ h3 {
   grid-template-columns: 1.1fr 2fr 1fr 1fr 1.2fr 1.2fr 1.2fr auto;
   gap: 8px 10px;
   margin-top: 8px;
+  min-width: 920px;
 }
 
 .cargo-grid p {
@@ -334,15 +338,57 @@ h3 {
     padding: 16px;
   }
 
+  .track-content {
+    padding: 10px;
+  }
+
   .field {
     grid-template-columns: 1fr;
   }
 
   .cargo-grid {
     grid-template-columns: 1fr;
+    min-width: 0;
   }
 
   .actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 1024px) {
+  .shipment-page {
+    width: min(98vw, 1200px);
+  }
+
+  .field {
+    grid-template-columns: 160px 1fr;
+  }
+
+  .cargo-grid {
+    min-width: 860px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .shipment-page {
+    width: min(94vw, 2100px);
+  }
+}
+
+@media (max-height: 700px) {
+  .status {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 14px 16px;
+  }
+
+  .field input,
+  .route-location-input,
+  .cargo-grid input {
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 }

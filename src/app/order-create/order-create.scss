@@ -7,9 +7,9 @@
 }
 
 .create-page {
-  max-width: 1120px;
+  width: min(96vw, 1520px);
   margin: 0 auto;
-  padding: 24px;
+  padding: clamp(14px, 2vw, 24px);
 }
 
 .page-header {
@@ -170,5 +170,23 @@ pre {
 
   .actions {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 1920px) {
+  .create-page {
+    width: min(94vw, 1820px);
+  }
+}
+
+@media (max-height: 700px) {
+  .card {
+    padding: 12px;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 8px 10px;
   }
 }

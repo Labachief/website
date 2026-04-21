@@ -60,6 +60,9 @@
     狀態: {{ isLoading ? 'loading' : 'ready' }} | 總筆數: {{ orders.length }} | 顯示筆數:
     {{ visibleOrders.length }}
   </p>
+  @if (uploadMessage) {
+    <p class="debug-line success-line">{{ uploadMessage }}</p>
+  }
 
   <div class="table-wrap">
     <table class="orders-table">
@@ -72,16 +75,17 @@
           <th>status</th>
           <th>created date</th>
           <th>updated date</th>
+          <th>attachment</th>
         </tr>
       </thead>
       <tbody>
         @if (isLoading) {
           <tr>
-            <td class="status-row" colspan="7">讀取中...</td>
+            <td class="status-row" colspan="8">讀取中...</td>
           </tr>
         } @else if (loadError) {
           <tr>
-            <td class="status-row error" colspan="7">
+            <td class="status-row error" colspan="8">
               {{ loadError }}
               <button type="button" class="retry-btn" (click)="retryLoadOrders()">
                 重試
@@ -107,12 +111,42 @@
             <td>{{ order.status }}</td>
             <td>{{ order.createdDate }}</td>
             <td>{{ order.updatedDate }}</td>
+            <td class="attachment-cell">
+              <div class="attachment-name-wrap">
+                @if (order.attachmentFileName) {
+                  <a
+                    class="file-link"
+                    [href]="attachmentUrl(order)"
+                    [attr.download]="order.attachmentFileName"
+                    [title]="order.attachmentFileName"
+                  >
+                    {{ order.attachmentFileName }}
+                  </a>
+                } @else {
+                  <span class="file-empty">未上傳</span>
+                }
+              </div>
+              <input
+                #fileInput
+                type="file"
+                class="file-input-hidden"
+                (change)="onUploadSelected(order, $event)"
+              />
+              <button
+                type="button"
+                class="mini-btn"
+                [disabled]="order.isUploading"
+                (click)="fileInput.click()"
+              >
+                {{ order.isUploading ? '上傳中' : '上傳' }}
+              </button>
+            </td>
           </tr>
         }
 
         @if (!isLoading && !loadError && visibleOrders.length === 0) {
           <tr>
-            <td class="status-row" colspan="7">目前沒有訂單資料</td>
+            <td class="status-row" colspan="8">目前沒有訂單資料</td>
           </tr>
         }
       </tbody>

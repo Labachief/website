@@ -11,6 +11,9 @@ type OrderRecord = {
   status: string;
   createdDate: string;
   updatedDate: string;
+  attachmentFileName: string;
+  attachmentDownloadUrl: string;
+  isUploading: boolean;
 };
 
 type OrdersApiItem = Partial<{
@@ -28,6 +31,18 @@ type OrdersApiItem = Partial<{
   updatedDate: string | null;
   updateDate: string | null;
   updated_at: string | null;
+}>;
+
+type OrderAttachmentPayload =
+  | string
+  | Partial<{
+      fileName: string | null;
+      downloadUrl: string | null;
+    }>
+  | null;
+
+type OrderByNumberResponse = Partial<{
+  attachment: OrderAttachmentPayload;
 }>;
 
 @Component({
@@ -50,6 +65,7 @@ export class Orders {
   protected appliedKeyword = '';
   protected selectedOrderId: number | null = null;
   protected orders: OrderRecord[] = [];
+  protected uploadMessage = '';
 
   constructor() {
     void this.loadOrders();
@@ -177,6 +193,76 @@ export class Orders {
     void this.loadOrders();
   }
 
+  protected async onUploadSelected(
+    order: OrderRecord,
+    event: Event,
+  ): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    order.isUploading = true;
+    this.uploadMessage = '';
+    this.loadError = '';
+    this.cdr.detectChanges();
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`/api/orders/${encodeURIComponent(order.number)}/upload`, {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP_${response.status}`);
+      }
+
+      const payload = (await response.json()) as {
+        fileName?: string;
+        downloadUrl?: string;
+        message?: string;
+      };
+      if (payload.fileName) {
+        order.attachmentFileName = payload.fileName;
+      }
+      if (payload.downloadUrl) {
+        order.attachmentDownloadUrl = this.toApiUrl(payload.downloadUrl);
+      }
+      this.uploadMessage = payload.message ?? `訂單 ${order.number} 上傳完成`;
+    } catch (error) {
+      console.error('Upload order file failed:', error);
+      this.loadError =
+        error instanceof DOMException && error.name === 'AbortError'
+          ? `訂單 ${order.number} 上傳逾時，請重試`
+          : `訂單 ${order.number} 上傳失敗`;
+    } finally {
+      window.clearTimeout(timeoutId);
+      order.isUploading = false;
+      input.value = '';
+      this.cdr.detectChanges();
+    }
+  }
+
+  protected attachmentUrl(order: OrderRecord): string {
+    if (order.attachmentDownloadUrl.trim()) {
+      return order.attachmentDownloadUrl;
+    }
+
+    const fileName = order.attachmentFileName?.trim();
+    if (!fileName) {
+      return '';
+    }
+
+    return `/api/orders/${encodeURIComponent(order.number)}/download/${encodeURIComponent(fileName)}`;
+  }
+
   protected toggleSelection(orderId: number): void {
     this.selectedOrderId = this.selectedOrderId === orderId ? null : orderId;
   }
@@ -227,7 +313,12 @@ export class Orders {
 
       const payload = (await response.json()) as unknown;
       const items = this.extractOrders(payload);
-      this.orders = items.map((item, index) => this.normalizeOrder(item, index));
+      const normalizedOrders = items.map((item, index) =>
+        this.normalizeOrder(item, index),
+      );
+      this.orders = await Promise.all(
+        normalizedOrders.map((order) => this.enrichAttachment(order)),
+      );
       this.selectedOrderId = null;
       settled = true;
       this.cdr.detectChanges();
@@ -266,7 +357,56 @@ export class Orders {
       updatedDate: this.toText(
         item.updatedDate ?? item.updateDate ?? item.updated_at ?? '',
       ),
+      attachmentFileName: '',
+      attachmentDownloadUrl: '',
+      isUploading: false,
     };
+  }
+
+  private async enrichAttachment(order: OrderRecord): Promise<OrderRecord> {
+    try {
+      const response = await fetch(
+        `/api/orders/${encodeURIComponent(order.number)}`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        },
+      );
+
+      if (!response.ok) {
+        return order;
+      }
+
+      const payload = (await response.json()) as OrderByNumberResponse;
+      const attachment = payload.attachment;
+      if (!attachment) {
+        return order;
+      }
+
+      if (typeof attachment === 'string') {
+        return {
+          ...order,
+          attachmentFileName: attachment.trim(),
+          attachmentDownloadUrl: attachment.trim()
+            ? `/api/orders/${encodeURIComponent(order.number)}/download/${encodeURIComponent(attachment.trim())}`
+            : '',
+        };
+      }
+
+      const fileName = this.toText(attachment.fileName).trim();
+      const directUrl = this.toText(attachment.downloadUrl).trim();
+      return {
+        ...order,
+        attachmentFileName: fileName,
+        attachmentDownloadUrl: directUrl
+          ? this.toApiUrl(directUrl)
+          : fileName
+            ? `/api/orders/${encodeURIComponent(order.number)}/download/${encodeURIComponent(fileName)}`
+            : '',
+      };
+    } catch {
+      return order;
+    }
   }
 
   private extractOrders(response: unknown): OrdersApiItem[] {
@@ -299,5 +439,9 @@ export class Orders {
     }
 
     return String(value);
+  }
+
+  private toApiUrl(url: string): string {
+    return url.startsWith('/api/') ? url : `/api${url}`;
   }
 }

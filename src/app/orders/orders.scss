@@ -152,6 +152,21 @@
   background: var(--blue-600);
 }
 
+.logout-btn {
+  height: clamp(40px, 4vh, 44px);
+  border: 0;
+  border-radius: 999px;
+  padding: 0 16px;
+  color: #fff;
+  background: #8a3f4f;
+  cursor: pointer;
+  font: inherit;
+}
+
+.logout-btn:hover {
+  background: #733443;
+}
+
 .clear-btn {
   background: #7c879b;
 }
@@ -434,7 +449,8 @@
   .search-panel select,
   .search-panel input,
   .search-btn,
-  .clear-btn {
+  .clear-btn,
+  .logout-btn {
     height: 40px;
     font-size: 15px;
   }
@@ -450,7 +466,8 @@
   }
 
   .search-btn,
-  .clear-btn {
+  .clear-btn,
+  .logout-btn {
     padding: 0 12px;
   }
 

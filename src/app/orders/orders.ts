@@ -2,6 +2,7 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { clearAuthToken, getAuthToken } from '../auth/auth-token';
 
 type OrderRecord = {
   id: number;
@@ -152,6 +153,9 @@ export class Orders {
       });
 
       if (!response.ok) {
+        if (this.handleUnauthorized(response.status)) {
+          return;
+        }
         throw new Error(`HTTP_${response.status}`);
       }
 
@@ -193,6 +197,19 @@ export class Orders {
     void this.loadOrders();
   }
 
+  protected async logout(): Promise<void> {
+    try {
+      if (getAuthToken()) {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      clearAuthToken();
+      void this.router.navigate(['/login']);
+    }
+  }
+
   protected async onUploadSelected(
     order: OrderRecord,
     event: Event,
@@ -221,6 +238,9 @@ export class Orders {
       });
 
       if (!response.ok) {
+        if (this.handleUnauthorized(response.status)) {
+          return;
+        }
         throw new Error(`HTTP_${response.status}`);
       }
 
@@ -308,6 +328,9 @@ export class Orders {
       });
 
       if (!response.ok) {
+        if (this.handleUnauthorized(response.status)) {
+          return;
+        }
         throw new Error(`HTTP_${response.status}`);
       }
 
@@ -443,5 +466,15 @@ export class Orders {
 
   private toApiUrl(url: string): string {
     return url.startsWith('/api/') ? url : `/api${url}`;
+  }
+
+  private handleUnauthorized(status: number): boolean {
+    if (status !== 401 && status !== 403) {
+      return false;
+    }
+
+    clearAuthToken();
+    void this.router.navigate(['/login']);
+    return true;
   }
 }

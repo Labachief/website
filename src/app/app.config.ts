@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
+import { fetchAuthInitProvider } from './auth/fetch-auth-init';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -9,5 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
     provideRouter(routes),
+    fetchAuthInitProvider,
   ],
 };
